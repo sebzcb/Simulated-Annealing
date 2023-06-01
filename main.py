@@ -45,7 +45,40 @@ def crearComunas():
     #Se ponen las comunas vecinas
     calleLarga.comunasVecinas = [losAndes, sanFelipe, rinconada] 
     sanEsteban.comunasVecinas = [losAndes, santaMaria,putaendo]
-    
+    rinconada.comunasVecinas = [calleLarga,losAndes,sanFelipe,rinconada]
+    losAndes.comunasVecinas = [sanEsteban,rinconada,sanFelipe,santaMaria]
+    cabildo.comunasVecinas = [petorca,laLigua,nogales,catemu,putaendo] #existe la posibilidad que este san felipe
+    laLigua.comunasVecinas = [papudo,zapallar,nogales,cabildo,petorca]
+    papudo.comunasVecinas = [laLigua,zapallar]
+    petorca.comunasVecinas = [laLigua,cabildo]
+    zapallar.comunasVecinas = [papudo,laLigua,nogales,puchuncavi]
+    hijuelas.comunasVecinas = [llayLlay,catemu,nogales,laCalera,laCruz,quillota,olmue]
+    laCalera.comunasVecinas = [hijuelas,nogales,laCruz,quillota]
+    laCruz.comunasVecinas = [hijuelas,laCalera,nogales,puchuncavi,quillota]
+    limache.comunasVecinas = [olmue,quillota,concon,quilpue,villaAlemana] #existe la posibilidad de agregar otra comuna
+    nogales.comunasVecinas = [cabildo,laLigua,zapallar,puchuncavi,laCruz,laCalera,hijuelas,catemu]
+    olmue.comunasVecinas = [hijuelas, quillota,limache,quilpue]
+    quillota.comunasVecinas = [hijuelas,laCalera,laCruz,puchuncavi,quintero,concon,limache,olmue]
+    algarrobo.comunasVecinas = []
+    cartagena.comunasVecinas = []
+    elQuisco.comunasVecinas = []
+    elTabo.comunasVecinas = []
+    sanAntonio.comunasVecinas = []
+    santoDomingo.comunasVecinas = []
+    catemu.comunasVecinas = []
+    llayLlay.comunasVecinas = []
+    panquehue.comunasVecinas = []
+    putaendo.comunasVecinas = []
+    sanFelipe.comunasVecinas = []
+    santaMaria.comunasVecinas = []
+    quilpue.comunasVecinas = []
+    concon.comunasVecinas = []
+    puchuncavi.comunasVecinas = []
+    casablanca.comunasVecinas = []
+    quintero.comunasVecinas = []
+    valparaiso.comunasVecinas = []
+    villaAlemana.comunasVecinas = []
+    vinaDelMar.comunasVecinas = []
 
     #Se agregan las comunas a la lista de comunas
     comunas.extend([
@@ -56,9 +89,12 @@ def crearComunas():
 
     return comunas
 
+def mostrarComunas(comunas):
+    for comuna in comunas :
+        comuna.mostrarDatos()
 
 comunas = crearComunas()
-
+mostrarComunas(comunas)
 #PROCESO simulated annealing
 
 '''
