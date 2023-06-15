@@ -122,11 +122,8 @@ class MetodosComunas:
         if len(lista) == 0:
                 return True
         return False
-    def quitarAntenasCobertura(solucionInicial):
-        for comuna in solucionInicial:
-            comuna.tieneAntena = False
-            comuna.tieneCobertura = False
-                
+
+    #propio de simulated annealing
     def generarSolucionInicial(comunas):
         coberturaTotal = False
         intentos = 0
@@ -140,9 +137,7 @@ class MetodosComunas:
                 if comuna.tieneAntena:
                     comuna.tieneCobertura = True
                     MetodosComunas.actualizarCoberturaVecinos(comuna)
-            print("---")
-            MetodosComunas.verificarDatosCorrectos(solucionInicial,comunas)
-            print("---")
+           
             coberturaTotal = MetodosComunas.verificarCoberturaTotal(solucionInicial)
         print(f"Intentos totales para generar solucion inicial: {intentos}")
         return solucionInicial
@@ -173,7 +168,7 @@ class MetodosComunas:
                 MetodosComunas.actualizarCoberturaVecinos(comuna)
                 
 
-
+    #propio de simulated annealing
     def generarSolucionVecina(comunas):
         tieneCoberturaTotal = False    
 
@@ -213,37 +208,6 @@ class MetodosComunas:
         return solucionVecina
     
 
-
-    def verificarDatosCorrectos(comunas,comunasOriginal):
-        copia = copy.deepcopy(comunas)
-        lista = [] 
-        for com in copia:
-            if com.tieneAntena :
-                if com not in lista :
-                    lista.append(com) 
-                
-                for c in com.comunasVecinas:
-                    if c not in lista:
-                        lista.append(c)
-
-        #print("COMUNAS QUE TIENEN COBERTURA SEGUN EL RESULTADO OBTENIDO. : ")
-        #for comuna in lista:
-        #    print(f"name:{comuna.nombre}")
-
-        #print(f"total : {len(lista)}")
-
-
-        listaids = []
-
-        for c in lista:
-            listaids.append(c.id)
-        
-        for co in comunas:
-            if co.id not in listaids :
-                print(f"falta: {co.nombre}, tieneCobertura:{co.tieneCobertura}")
-                return False
-        return True
-        
 
 
 

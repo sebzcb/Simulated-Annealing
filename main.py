@@ -8,6 +8,7 @@ def verHistorial(historialSoluciones):
         for solucion in historialSoluciones:
             print(f"{iteracion}. N° antenas: {MetodosComunas.calcularAntenas(solucion)} Costo : {MetodosComunas.calcularCostoTotal(solucion)}")
             iteracion+=1
+            
 def quicksort(arr):
     if len(arr) <= 1:
         return arr
@@ -37,7 +38,7 @@ temperaturaFin = 0
 #si el factor de enfriamiento es muy bajo, disminuye la temperatura muy rapido y por tanto cuando se hace el calculo de la probabilidad de 
 # aceptacion muchas veces el numero es muy pequeño y ocurre errores, ej errores : 0.2
 factorEnfriamiento = 0.9
-
+iteracionesMax = 100
 print("Solucion inicial")
 solucionActual = MetodosComunas.generarSolucionInicial(comunas) #actualiza la lista de comunas actual poniendo antenas de forma random, pero asegurando cobertura total.
 MetodosComunas.mostrarDatosAntenasCobertura(solucionActual)
@@ -47,7 +48,7 @@ costoSolucionActual = MetodosComunas.calcularCostoTotal(solucionActual)
 
 historialSoluciones = []
 iteraciones = 0
-while iteraciones < 100 :
+while iteraciones < iteracionesMax :
     #Generar una solución vecina haciendo un movimiento aleatorio (SWAP)
     solucionVecina = MetodosComunas.generarSolucionVecina(solucionActual)
     costoSolucionVecina = MetodosComunas.calcularCostoTotal(solucionVecina)
@@ -87,18 +88,16 @@ print(f"Iteracioness: {iteraciones}")
 
 MetodosComunas.mostrarDatosAntenasCobertura(solucionActual)
 print(f"Costo: {MetodosComunas.calcularCostoTotal(solucionActual)} Antenas: {MetodosComunas.calcularAntenas(solucionActual)}")
-print("VER SI FALTAN COMUNAS CON COBERTURA: ")
-MetodosComunas.verificarDatosCorrectos(solucionActual,comunas)
 
 print(f"largo historial:{len(historialSoluciones)}")
 print(f"temp : {temperaturaActual}")
 
 verHistorial(historialSoluciones)
-print(f"{time.time()} segundos ")
 ordenado = quicksort(historialSoluciones)
 verHistorial(ordenado)
 
 print(f"Mejor solucion : {MetodosComunas.calcularCostoTotal(ordenado[0])}")
+print(f"{time.time()} segundos ")
 
 
 
