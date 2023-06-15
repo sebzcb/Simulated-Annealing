@@ -19,10 +19,9 @@ class Comuna:
         self.mostrarVecinos()
 
     def mostrarDatosAntenaCobertura(self):
-        
         # Definir el ancho de cada columna
         anchoColumnaNombre = 20
-        anchoColumnaAntena = 10
+        anchoColumnaAntena = 20
         
          #el nombre se alinea a la izquierda (<) en una columna de ancho definido por anchoColumnaNombre
         nombre = f"{self.nombre:<{anchoColumnaNombre}}"

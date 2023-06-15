@@ -2,7 +2,7 @@ from MetodosComunas import *
 
 #crear poblacion
 comunas = MetodosComunas.crear() #se crean las comunas y la lista de comunas creada se retorna a variable comunas
-MetodosComunas.mostrar(comunas)
+#MetodosComunas.mostrar(comunas)
 
 #inicializar variables control
 temperaturaActual = 100
@@ -10,19 +10,29 @@ temperaturaFin = 10
 factorEnfriamiento = 0.5 
 
 print("Solucion inicial")
-MetodosComunas.generarSolucionInicial(comunas) #actualiza la lista de comunas actual poniendo antenas de forma random, pero asegurando cobertura total.
-MetodosComunas.mostrarDatosAntenasCobertura(comunas)
-print(f"Costo: {MetodosComunas.calcularCostoTotal(comunas)} Antenas: {MetodosComunas.calcularAntenas(comunas)}")
-costoActual = MetodosComunas.calcularCostoTotal(comunas)
+solucionActual = MetodosComunas.generarSolucionInicial(comunas) #actualiza la lista de comunas actual poniendo antenas de forma random, pero asegurando cobertura total.
+MetodosComunas.mostrarDatosAntenasCobertura(solucionActual)
+print(f"Costo: {MetodosComunas.calcularCostoTotal(solucionActual)} Antenas: {MetodosComunas.calcularAntenas(solucionActual)}")
+costoSolucionActual = MetodosComunas.calcularCostoTotal(solucionActual)
+
+print("----------------")
+
 
 while temperaturaActual > temperaturaFin:
     #Generar una solución vecina haciendo un movimiento aleatorio (SWAP)
+    solucionVecina = MetodosComunas.generarSolucionVecina(comunas)
+
     #Calcular el costo de la solución vecina
-    #Calcular la diferencia de costos entre la solución vecina y la solución actual
-    if True: #Si la solución vecina es mejor (tiene un costo menor):
+    costoSolucionVecina = MetodosComunas.calcularCostoTotal(solucionVecina)
+    
+    MetodosComunas.mostrarDatosAntenasCobertura(solucionVecina) 
+    print(f"Costo: {MetodosComunas.calcularCostoTotal(solucionVecina)} Antenas: {MetodosComunas.calcularAntenas(solucionVecina)}")
+
+    if costoSolucionVecina < costoSolucionActual: 
         #Aceptar la solución vecina como la nueva solución actual
+        solucionActual = solucionVecina
         #Actualizar el costo actual con el costo de la solución vecina
-        continue
+        costoSolucionActual = costoSolucionVecina
     else:
         #Calcular la probabilidad de aceptación según el criterio de Metropolis
         #Generar un número aleatorio entre 0 y 1
@@ -34,7 +44,7 @@ while temperaturaActual > temperaturaFin:
     temperaturaActual*=factorEnfriamiento
 
     print("Solucion Final: ")
-    MetodosComunas.mostrar(comunas)
+    MetodosComunas.mostrar(solucionActual)
 '''
 
 Inicializar temperatura inicial

@@ -97,6 +97,13 @@ class MetodosComunas:
             comuna.mostrarDatos()
     
     def mostrarDatosAntenasCobertura(comunas):
+        print()
+        # Encabezado de columnas
+        encabezado_nombre = f"{'Nombre':<{20}}"
+        encabezado_antena = f"{'Tiene Antena':<{20}}"
+        encabezado_cobertura = f"{'Tiene Cobertura'}"
+
+        print(f"{encabezado_nombre} {encabezado_antena} {encabezado_cobertura}")
         for comuna in comunas :
             comuna.mostrarDatosAntenaCobertura()
     
@@ -112,17 +119,21 @@ class MetodosComunas:
         return True
     
     def generarSolucionInicial(comunas):
+        solucionInicial = comunas.copy()
+
         coberturaTotal = False
         intentos = 0
         while not coberturaTotal:
             intentos+=1
-            for comuna in comunas:
+            for comuna in solucionInicial:
                 comuna.tieneAntena = random.choice([True, False])
                 if comuna.tieneAntena:
                     comuna.tieneCobertura = True
                     MetodosComunas.actualizarCoberturaVecinos(comuna)
-            coberturaTotal = MetodosComunas.verificarCoberturaTotal(comunas)
+            coberturaTotal = MetodosComunas.verificarCoberturaTotal(solucionInicial)
         print(f"Intentos totales para generar solucion inicial: {intentos}")
+        return solucionInicial
+
     
     def calcularCostoTotal(comunas):
         costoTotal = 0
@@ -137,3 +148,28 @@ class MetodosComunas:
             if comuna.tieneAntena:
                 antenas+=1
         return antenas
+    
+    def generarSolucionVecina(comunas):
+        # Copia la solución actual para modificarla
+        solucionVecina = comunas.copy()  
+
+        tieneCoberturaTotal = False    
+        # Mientras no se cumpla la cobertura total, sigue generando soluciones vecinas
+        while not tieneCoberturaTotal:
+            #Selecciona dos comunas aleatoriamente,  tienen que ser distintos y uno tiene que tener antena y el otro no.
+            comunasElegidas = False 
+            while not comunasElegidas:
+                comuna1 = random.choice(solucionVecina)
+                comuna2 = random.choice(solucionVecina)
+                #tienen que ser distintos Y uno tiene que tener antena y el otro no.
+                if (comuna1.id != comuna2.id) and ( (comuna1.tieneAntena == True and comuna2.tieneAntena == False)  or (comuna1.tieneAntena == False and comuna2.tieneAntena == True)): 
+                    comunasElegidas=True
+            
+            # Realiza el swap entre las antenas de las dos comunas, 
+            comuna1.tieneAntena, comuna2.tieneAntena = comuna2.tieneAntena, comuna1.tieneAntena
+            print(f"Comuna1 elegida: {comuna1.nombre} tieneAntena : {comuna1.tieneAntena} costo: {comuna1.costo}")
+            print(f"Comuna 2 elegida:{comuna2.nombre} tieneAntena : {comuna2.tieneAntena} costo: {comuna2.costo}")
+            # Verifica la cobertura de todas las comunas
+            tieneCoberturaTotal = MetodosComunas.verificarCoberturaTotal(solucionVecina)
+        
+        return solucionVecina
