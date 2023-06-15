@@ -18,6 +18,7 @@ factorEnfriamiento = 0.9
 print("Solucion inicial")
 solucionActual = MetodosComunas.generarSolucionInicial(comunas) #actualiza la lista de comunas actual poniendo antenas de forma random, pero asegurando cobertura total.
 MetodosComunas.mostrarDatosAntenasCobertura(solucionActual)
+MetodosComunas.verificarDatosCorrectos(solucionActual,comunas)
 
 print(f"Costo: {MetodosComunas.calcularCostoTotal(solucionActual)} Antenas: {MetodosComunas.calcularAntenas(solucionActual)}")
 costoSolucionActual = MetodosComunas.calcularCostoTotal(solucionActual)
@@ -27,8 +28,12 @@ iteraciones = 0
 while iteraciones < 10 :
     #Generar una solución vecina haciendo un movimiento aleatorio (SWAP)
     solucionVecina = MetodosComunas.generarSolucionVecina(solucionActual)
-    print("solucion vecina::::")
-    MetodosComunas.mostrarDatosAntenasCobertura(solucionVecina)
+    print("==============verificar si faltan comunas con cobertura FORMA 1 ===============")
+    MetodosComunas.verificarDatosCorrectos(solucionVecina,comunas)
+    #print("==============verificar si faltan comunas con cobertura FORMA 2 ===============")
+    #MetodosComunas.verificarCoberturaTotal(solucionVecina)
+    #print("===========================================================")
+    #MetodosComunas.mostrarDatosAntenasCobertura(solucionVecina)
     #Calcular el costo de la solución vecina
     costoSolucionVecina = MetodosComunas.calcularCostoTotal(solucionVecina)
     
@@ -46,9 +51,9 @@ while iteraciones < 10 :
     else:
         #Calcular la probabilidad de aceptación según el criterio de Metropolis (e ** (-diferenciaCostos / temp. Actual))
         dif = costoSolucionActual-costoSolucionVecina
-        print(f"e ** ( {dif} / {temperaturaActual})")
+        #print(f"e ** ( {dif} / {temperaturaActual})")
         probabilidadAceptacion = math.exp(-dif / temperaturaActual)
-        print(f"prob. aceptacion = {probabilidadAceptacion}")
+        #print(f"prob. aceptacion = {probabilidadAceptacion}")
         #Generar un número aleatorio entre 0 y 1
         numeroRandom = random.random()
 
@@ -59,10 +64,11 @@ while iteraciones < 10 :
             #Actualizar el costo actual con el costo de la solución vecina
             costoSolucionActual = costoSolucionVecina
 
-            print(f"{numeroRandom} < {probabilidadAceptacion} Hay nueva solucion, costo {costoSolucionActual}")
+            #print(f"{numeroRandom} < {probabilidadAceptacion} Hay nueva solucion, costo {costoSolucionActual}")
             historialSoluciones.append(solucionActual)
-        else:    
-            print("No hay solucion nueva")
+        else:
+            continue    
+            #print("No hay solucion nueva")
     iteraciones+=1
     temperaturaActual*=factorEnfriamiento
 
@@ -72,8 +78,8 @@ print(f"Iteracioness: {iteraciones}")
 
 MetodosComunas.mostrarDatosAntenasCobertura(solucionActual)
 print(f"Costo: {MetodosComunas.calcularCostoTotal(solucionActual)} Antenas: {MetodosComunas.calcularAntenas(solucionActual)}")
-
-MetodosComunas.verificarDatosCorrectos(solucionActual)
+print("VER SI FALTAN COMUNAS CON COBERTURA: ")
+MetodosComunas.verificarDatosCorrectos(solucionActual,comunas)
 
 
 

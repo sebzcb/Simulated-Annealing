@@ -113,18 +113,21 @@ class MetodosComunas:
 
     
     def verificarCoberturaTotal(comunas):
+        lista = []
         for comuna in comunas:
             if not comuna.tieneCobertura:
-                return False
-        return True
+                lista.append(comuna)
+                print(f"{comuna.nombre} no tiene cobertura ")
+
+        if len(lista) == 0:
+                return True
+        return False
     def quitarAntenasCobertura(solucionInicial):
         for comuna in solucionInicial:
             comuna.tieneAntena = False
             comuna.tieneCobertura = False
                 
     def generarSolucionInicial(comunas):
-        
-
         coberturaTotal = False
         intentos = 0
         while not coberturaTotal:
@@ -137,6 +140,9 @@ class MetodosComunas:
                 if comuna.tieneAntena:
                     comuna.tieneCobertura = True
                     MetodosComunas.actualizarCoberturaVecinos(comuna)
+            print("---")
+            MetodosComunas.verificarDatosCorrectos(solucionInicial,comunas)
+            print("---")
             coberturaTotal = MetodosComunas.verificarCoberturaTotal(solucionInicial)
         print(f"Intentos totales para generar solucion inicial: {intentos}")
         return solucionInicial
@@ -158,6 +164,9 @@ class MetodosComunas:
     
     #ve todas las comunas que tengan antena desde el primero hasta el ultimo y les pone cobertura a sus vecinos y a si mismo.
     def actualizarCoberturaAntenas(comunas):
+        for c in comunas:
+            c.tieneCobertura = False
+            
         for comuna in comunas:
             if comuna.tieneAntena:
                 comuna.tieneCobertura = True
@@ -187,22 +196,25 @@ class MetodosComunas:
             
             # Realiza el swap entre las antenas de las dos comunas, 
             comuna1.tieneAntena, comuna2.tieneAntena = comuna2.tieneAntena, comuna1.tieneAntena
-            print(f"Comuna1 elegida: {comuna1.nombre} tieneAntena : {comuna1.tieneAntena} costo: {comuna1.costo}")
-            print(f"Comuna 2 elegida:{comuna2.nombre} tieneAntena : {comuna2.tieneAntena} costo: {comuna2.costo}")
+            #print(f"Comuna 1 elegida: {comuna1.nombre} tieneAntena : {comuna1.tieneAntena} costo: {comuna1.costo}")
+            #print(f"Comuna 2 elegida:{comuna2.nombre} tieneAntena : {comuna2.tieneAntena} costo: {comuna2.costo}")
             
             MetodosComunas.actualizarCoberturaAntenas(solucionVecina)
+            print("---")
+            #if MetodosComunas.verificarDatosCorrectos(solucionVecina,comunas):
+            if MetodosComunas.verificarCoberturaTotal(solucionVecina):
+                tieneCoberturaTotal = True
+            print("---")
             # Verifica la cobertura de todas las comunas
-            tieneCoberturaTotal = MetodosComunas.verificarCoberturaTotal(solucionVecina)
+            #tieneCoberturaTotal = MetodosComunas.verificarCoberturaTotal(solucionVecina)
             
 
         print(f"intentos para sol. vecina: {iteraciones}")
         return solucionVecina
    
-    def verificarDatosCorrectos(comunas):
+    def verificarDatosCorrectos(comunas,comunasOriginal):
         copia = copy.deepcopy(comunas)
-        
-        lista = []
-
+        lista = [] 
         for com in copia:
             if com.tieneAntena :
                 if com not in lista :
@@ -211,11 +223,27 @@ class MetodosComunas:
                 for c in com.comunasVecinas:
                     if c not in lista:
                         lista.append(c)
-        print("COMUNAS QUE TIENEN COBERTURA SEGUN EL RESULTADO OBTENIDO. : ")
-        for comuna in lista:
-            print(f"name:{comuna.nombre}")
 
-        print(f"total : {len(lista)}")
+        #print("COMUNAS QUE TIENEN COBERTURA SEGUN EL RESULTADO OBTENIDO. : ")
+        #for comuna in lista:
+        #    print(f"name:{comuna.nombre}")
+
+        #print(f"total : {len(lista)}")
+
+
+        listaids = []
+
+        for c in lista:
+            listaids.append(c.id)
+        
+        for co in comunas:
+            if co.id not in listaids :
+                print(f"falta: {co.nombre}, tieneCobertura:{co.tieneCobertura}")
+                return False
+        return True
+        
+
+
 
 
             
