@@ -166,7 +166,7 @@ class MetodosComunas:
     def actualizarCoberturaAntenas(comunas):
         for c in comunas:
             c.tieneCobertura = False
-            
+
         for comuna in comunas:
             if comuna.tieneAntena:
                 comuna.tieneCobertura = True
@@ -211,7 +211,9 @@ class MetodosComunas:
 
         print(f"intentos para sol. vecina: {iteraciones}")
         return solucionVecina
-   
+    
+
+
     def verificarDatosCorrectos(comunas,comunasOriginal):
         copia = copy.deepcopy(comunas)
         lista = [] 

@@ -1,6 +1,30 @@
 from MetodosComunas import *
 import math
 import random
+import time
+
+def verHistorial(historialSoluciones):
+        iteracion = 1
+        for solucion in historialSoluciones:
+            print(f"{iteracion}. N° antenas: {MetodosComunas.calcularAntenas(solucion)} Costo : {MetodosComunas.calcularCostoTotal(solucion)}")
+            iteracion+=1
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = MetodosComunas.calcularCostoTotal(arr[len(arr) // 2])
+    left = []
+    middle = []
+    right = []
+    for x in arr:
+        costo = MetodosComunas.calcularCostoTotal(x)
+        if costo < pivot:
+            left.append(x)
+        elif costo == pivot:
+            middle.append(x)
+        else:
+            right.append(x)
+    return quicksort(left) + middle + quicksort(right)
+
 
 #crear poblacion
 comunas = MetodosComunas.crear() #se crean las comunas y la lista de comunas creada se retorna a variable comunas
@@ -14,27 +38,18 @@ temperaturaFin = 0
 # aceptacion muchas veces el numero es muy pequeño y ocurre errores, ej errores : 0.2
 factorEnfriamiento = 0.9
 
-
 print("Solucion inicial")
 solucionActual = MetodosComunas.generarSolucionInicial(comunas) #actualiza la lista de comunas actual poniendo antenas de forma random, pero asegurando cobertura total.
 MetodosComunas.mostrarDatosAntenasCobertura(solucionActual)
-MetodosComunas.verificarDatosCorrectos(solucionActual,comunas)
 
 print(f"Costo: {MetodosComunas.calcularCostoTotal(solucionActual)} Antenas: {MetodosComunas.calcularAntenas(solucionActual)}")
 costoSolucionActual = MetodosComunas.calcularCostoTotal(solucionActual)
 
 historialSoluciones = []
 iteraciones = 0
-while iteraciones < 10 :
+while iteraciones < 100 :
     #Generar una solución vecina haciendo un movimiento aleatorio (SWAP)
     solucionVecina = MetodosComunas.generarSolucionVecina(solucionActual)
-    print("==============verificar si faltan comunas con cobertura FORMA 1 ===============")
-    MetodosComunas.verificarDatosCorrectos(solucionVecina,comunas)
-    #print("==============verificar si faltan comunas con cobertura FORMA 2 ===============")
-    #MetodosComunas.verificarCoberturaTotal(solucionVecina)
-    #print("===========================================================")
-    #MetodosComunas.mostrarDatosAntenasCobertura(solucionVecina)
-    #Calcular el costo de la solución vecina
     costoSolucionVecina = MetodosComunas.calcularCostoTotal(solucionVecina)
     
     #MetodosComunas.mostrarDatosAntenasCobertura(solucionVecina) 
@@ -51,9 +66,7 @@ while iteraciones < 10 :
     else:
         #Calcular la probabilidad de aceptación según el criterio de Metropolis (e ** (-diferenciaCostos / temp. Actual))
         dif = costoSolucionActual-costoSolucionVecina
-        #print(f"e ** ( {dif} / {temperaturaActual})")
         probabilidadAceptacion = math.exp(-dif / temperaturaActual)
-        #print(f"prob. aceptacion = {probabilidadAceptacion}")
         #Generar un número aleatorio entre 0 y 1
         numeroRandom = random.random()
 
@@ -63,55 +76,30 @@ while iteraciones < 10 :
             solucionActual = solucionVecina
             #Actualizar el costo actual con el costo de la solución vecina
             costoSolucionActual = costoSolucionVecina
-
-            #print(f"{numeroRandom} < {probabilidadAceptacion} Hay nueva solucion, costo {costoSolucionActual}")
             historialSoluciones.append(solucionActual)
-        else:
-            continue    
-            #print("No hay solucion nueva")
+
     iteraciones+=1
     temperaturaActual*=factorEnfriamiento
+    
 
 #sale del While
 print(f"Iteracioness: {iteraciones}")
-
 
 MetodosComunas.mostrarDatosAntenasCobertura(solucionActual)
 print(f"Costo: {MetodosComunas.calcularCostoTotal(solucionActual)} Antenas: {MetodosComunas.calcularAntenas(solucionActual)}")
 print("VER SI FALTAN COMUNAS CON COBERTURA: ")
 MetodosComunas.verificarDatosCorrectos(solucionActual,comunas)
 
+print(f"largo historial:{len(historialSoluciones)}")
+print(f"temp : {temperaturaActual}")
+
+verHistorial(historialSoluciones)
+print(f"{time.time()} segundos ")
+ordenado = quicksort(historialSoluciones)
+verHistorial(ordenado)
+
+print(f"Mejor solucion : {MetodosComunas.calcularCostoTotal(ordenado[0])}")
 
 
-'''
 
-Inicializar temperatura inicial
-Inicializar temperatura parada
-Inicializar el factor de enfriamiento
-
-Establecer la solución actual como la solución inicial, actualiza arreglo comunas
-Establecer el costo actual como el costo total de la solución actual
-
-Mientras la temperatura actual sea mayor que temperatura de parada:
-    Generar una solución vecina haciendo un movimiento aleatorio (SWAP)
-    Calcular el costo de la solución vecina
-    
-    Calcular la diferencia de costos entre la solución vecina y la solución actual
-    
-    Si la solución vecina es mejor (tiene un costo menor):
-        Aceptar la solución vecina como la nueva solución actual
-        Actualizar el costo actual con el costo de la solución vecina
-    Si no:
-        Calcular la probabilidad de aceptación según el criterio de Metropolis
-        Generar un número aleatorio entre 0 y 1
-        
-        Si el número aleatorio es menor o igual a la probabilidad de aceptación:
-            Aceptar la solución vecina como la nueva solución actual
-            Actualizar el costo actual con el costo de la solución vecina
-    
-    Reducir la temperatura multiplicándola por el factor de enfriamiento
-
-Devolver la mejor solución encontrada
-
-'''
 
