@@ -1,4 +1,6 @@
 from MetodosComunas import *
+import math
+import random
 
 #crear poblacion
 comunas = MetodosComunas.crear() #se crean las comunas y la lista de comunas creada se retorna a variable comunas
@@ -25,26 +27,41 @@ while temperaturaActual > temperaturaFin:
     #Calcular el costo de la solución vecina
     costoSolucionVecina = MetodosComunas.calcularCostoTotal(solucionVecina)
     
-    MetodosComunas.mostrarDatosAntenasCobertura(solucionVecina) 
+    #MetodosComunas.mostrarDatosAntenasCobertura(solucionVecina) 
     print(f"Costo: {MetodosComunas.calcularCostoTotal(solucionVecina)} Antenas: {MetodosComunas.calcularAntenas(solucionVecina)}")
-
+    
     if costoSolucionVecina < costoSolucionActual: 
         #Aceptar la solución vecina como la nueva solución actual
         solucionActual = solucionVecina
         #Actualizar el costo actual con el costo de la solución vecina
         costoSolucionActual = costoSolucionVecina
-    else:
-        #Calcular la probabilidad de aceptación según el criterio de Metropolis
-        #Generar un número aleatorio entre 0 y 1
+        print(f"entro if Hay nueva solucion, costo: {costoSolucionActual}")
+
         
+    else:
+        #Calcular la probabilidad de aceptación según el criterio de Metropolis (e ** (-diferenciaCostos / temp. Actual))
+        probabilidadAceptacion = math.exp(-(costoSolucionActual-costoSolucionVecina) / temperaturaActual)
+        print(f"prob. aceptacion = {probabilidadAceptacion}")
+        #Generar un número aleatorio entre 0 y 1
+        numeroRandom = random.random()
+
         #Si el número aleatorio es menor o igual a la probabilidad de aceptación:
+        if(numeroRandom <= probabilidadAceptacion):
             #Aceptar la solución vecina como la nueva solución actual
+            solucionActual = solucionVecina
             #Actualizar el costo actual con el costo de la solución vecina
-        continue
+            costoSolucionActual = costoSolucionVecina
+
+            print(f"{numeroRandom} < {probabilidadAceptacion} Hay nueva solucion, costo {costoSolucionActual}")
+        else:    
+            print("No hay solucion nueva")
+    
     temperaturaActual*=factorEnfriamiento
 
-    print("Solucion Final: ")
-    MetodosComunas.mostrar(solucionActual)
+#sale del While
+print("Solucion Final: ")
+#MetodosComunas.mostrar(solucionActual)
+
 '''
 
 Inicializar temperatura inicial

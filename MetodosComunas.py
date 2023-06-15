@@ -173,3 +173,4 @@ class MetodosComunas:
             tieneCoberturaTotal = MetodosComunas.verificarCoberturaTotal(solucionVecina)
         
         return solucionVecina
+   
