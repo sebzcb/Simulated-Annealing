@@ -1,6 +1,6 @@
 from Comuna import Comuna
 import random
-
+import copy
 class MetodosComunas:
 
     #Proceso crear comunas, asignar comunas vecinas y retornar lista de comunas creadas.
@@ -117,13 +117,20 @@ class MetodosComunas:
             if not comuna.tieneCobertura:
                 return False
         return True
-    
+    def quitarAntenasCobertura(solucionInicial):
+        for comuna in solucionInicial:
+            comuna.tieneAntena = False
+            comuna.tieneCobertura = False
+                
     def generarSolucionInicial(comunas):
-        solucionInicial = comunas.copy()
+        
 
         coberturaTotal = False
         intentos = 0
         while not coberturaTotal:
+            solucionInicial = copy.deepcopy(comunas)
+            #poner todas las coberturas en false y quitar todas las antenas de la iteracion anterior.
+            #MetodosComunas.quitarAntenasCobertura(solucionInicial)
             intentos+=1
             for comuna in solucionInicial:
                 comuna.tieneAntena = random.choice([True, False])
@@ -149,13 +156,26 @@ class MetodosComunas:
                 antenas+=1
         return antenas
     
-    def generarSolucionVecina(comunas):
-        # Copia la solución actual para modificarla
-        solucionVecina = comunas.copy()  
+    #ve todas las comunas que tengan antena desde el primero hasta el ultimo y les pone cobertura a sus vecinos y a si mismo.
+    def actualizarCoberturaAntenas(comunas):
+        for comuna in comunas:
+            if comuna.tieneAntena:
+                comuna.tieneCobertura = True
+                MetodosComunas.actualizarCoberturaVecinos(comuna)
+                
 
+
+    def generarSolucionVecina(comunas):
         tieneCoberturaTotal = False    
+
         # Mientras no se cumpla la cobertura total, sigue generando soluciones vecinas
-        while not tieneCoberturaTotal:
+        iteraciones = 0
+        while not tieneCoberturaTotal:  
+            # Copia la solución actual para modificarla
+            solucionVecina = copy.deepcopy(comunas)
+
+            #devuelta a la solucion vecina.
+            iteraciones+=1
             #Selecciona dos comunas aleatoriamente,  tienen que ser distintos y uno tiene que tener antena y el otro no.
             comunasElegidas = False 
             while not comunasElegidas:
@@ -169,8 +189,33 @@ class MetodosComunas:
             comuna1.tieneAntena, comuna2.tieneAntena = comuna2.tieneAntena, comuna1.tieneAntena
             print(f"Comuna1 elegida: {comuna1.nombre} tieneAntena : {comuna1.tieneAntena} costo: {comuna1.costo}")
             print(f"Comuna 2 elegida:{comuna2.nombre} tieneAntena : {comuna2.tieneAntena} costo: {comuna2.costo}")
+            
+            MetodosComunas.actualizarCoberturaAntenas(solucionVecina)
             # Verifica la cobertura de todas las comunas
             tieneCoberturaTotal = MetodosComunas.verificarCoberturaTotal(solucionVecina)
-        
+            
+
+        print(f"intentos para sol. vecina: {iteraciones}")
         return solucionVecina
    
+    def verificarDatosCorrectos(comunas):
+        copia = copy.deepcopy(comunas)
+        
+        lista = []
+
+        for com in copia:
+            if com.tieneAntena :
+                if com not in lista :
+                    lista.append(com) 
+                
+                for c in com.comunasVecinas:
+                    if c not in lista:
+                        lista.append(c)
+        print("COMUNAS QUE TIENEN COBERTURA SEGUN EL RESULTADO OBTENIDO. : ")
+        for comuna in lista:
+            print(f"name:{comuna.nombre}")
+
+        print(f"total : {len(lista)}")
+
+
+            
