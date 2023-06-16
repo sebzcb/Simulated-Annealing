@@ -19,18 +19,18 @@ def quicksort(historialSoluciones):
     if len(historialSoluciones) <= 1:
         return historialSoluciones
     pivot = MetodosComunas.calcularCostoTotal(historialSoluciones[len(historialSoluciones) // 2])
-    left = []
-    middle = []
-    right = []
+    izquierda = []
+    medio = []
+    derecha = []
     for listaComunas in historialSoluciones:
         costo = MetodosComunas.calcularCostoTotal(listaComunas)
         if costo < pivot:
-            left.append(listaComunas)
+            izquierda.append(listaComunas)
         elif costo == pivot:
-            middle.append(listaComunas)
+            medio.append(listaComunas)
         else:
-            right.append(listaComunas)
-    return quicksort(left) + middle + quicksort(right)
+            derecha.append(listaComunas)
+    return quicksort(izquierda) + medio + quicksort(derecha)
 
 '''
 Funcion que retorna el promedio de costos de las soluciones generadas.
