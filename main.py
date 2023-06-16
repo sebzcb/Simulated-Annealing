@@ -26,11 +26,23 @@ def quicksort(arr):
     return quicksort(left) + middle + quicksort(right)
 def calcularMediaCostos(historialSoluciones):
     sumaCosto = 0 
-    comunasConAntena = 0 
     for solucion in historialSoluciones :
         sumaCosto+= MetodosComunas.calcularCostoTotal(solucion)
-        comunasConAntena+=1
-    return sumaCosto/comunasConAntena
+    return sumaCosto/len(historialSoluciones)
+
+#calcula desviacion estandar del historial solucione, cada solucion es una  lista de comunas con una combinacion de antenas.
+def calcularDesviacionEstandar(historialSoluciones,media):
+    # Calculamos la suma de los cuadrados de las diferencias con la media    
+    sumaCuadrados = 0
+    for listaComunas in historialSoluciones:
+        sumaCuadrados += (MetodosComunas.calcularCostoTotal(listaComunas) - media) ** 2
+
+    # Calculamos la varianza dividiendo la suma de los cuadrados entre el tamaño de la lista
+    varianza = sumaCuadrados / (len(historialSoluciones)-1)
+
+    # Calculamos la desviación estándar como la raíz cuadrada de la varianza
+    desviacion_estandar = varianza ** 0.5
+    return desviacion_estandar
 
 #crear poblacion
 comunas = MetodosComunas.crear() #se crean las comunas y la lista de comunas creada se retorna a variable comunas
@@ -94,7 +106,9 @@ ordenado = quicksort(historialSoluciones)
 verHistorial(ordenado)
 
 print(f"Mejor solucion : {MetodosComunas.calcularCostoTotal(ordenado[0])}")
-print(f"Costo promedio por instalar antena :{calcularMediaCostos(historialSoluciones)}")
+
+media = calcularMediaCostos(historialSoluciones)
+print(f"Costo promedio por instalar antena :{media} D.E = {calcularDesviacionEstandar(historialSoluciones,media)}")
 print(f"{time.time()} segundos ")
 
 
