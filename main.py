@@ -1,36 +1,49 @@
 import MetodosComunas
 import time
 import SA
-
+'''
+Esta funcion almacena las soluciones obtenidas durante la ejecucion del algoritmo, cada solucion representa una lista de comunas en la que cada
+comuna puede o no tener una antena y tener o no cobertura.
+'''
 def verHistorial(historialSoluciones):
         iteracion = 1
         for solucion in historialSoluciones:
             print(f"{iteracion}. N° antenas: {MetodosComunas.calcularAntenas(solucion)} Costo : {MetodosComunas.calcularCostoTotal(solucion)}")
             iteracion+=1
 
-def quicksort(arr):
-    if len(arr) <= 1:
-        return arr
-    pivot = MetodosComunas.calcularCostoTotal(arr[len(arr) // 2])
+'''
+Es el algoritmo de ordenamiento utilizado donde se se elige un pivote que esta ubicado en la mitad y despues se ve si la solucion elegida tiene 
+menor, igual o mayor costo que el pivote. Funciona de forma recursiva.
+'''
+def quicksort(historialSoluciones):
+    if len(historialSoluciones) <= 1:
+        return historialSoluciones
+    pivot = MetodosComunas.calcularCostoTotal(historialSoluciones[len(historialSoluciones) // 2])
     left = []
     middle = []
     right = []
-    for x in arr:
-        costo = MetodosComunas.calcularCostoTotal(x)
+    for listaComunas in historialSoluciones:
+        costo = MetodosComunas.calcularCostoTotal(listaComunas)
         if costo < pivot:
-            left.append(x)
+            left.append(listaComunas)
         elif costo == pivot:
-            middle.append(x)
+            middle.append(listaComunas)
         else:
-            right.append(x)
+            right.append(listaComunas)
     return quicksort(left) + middle + quicksort(right)
+
+'''
+Funcion que retorna el promedio de costos de las soluciones generadas.
+'''
+
 def calcularMediaCostos(historialSoluciones):
     sumaCosto = 0 
     for solucion in historialSoluciones :
         sumaCosto+= MetodosComunas.calcularCostoTotal(solucion)
     return sumaCosto/len(historialSoluciones)
-
-#calcula desviacion estandar del historial solucione, cada solucion es una  lista de comunas con una combinacion de antenas.
+'''
+Calcula la desviacion estandar del historial de soluciones usando la formula.
+'''
 def calcularDesviacionEstandar(historialSoluciones,media):
     # Calculamos la suma de los cuadrados de las diferencias con la media    
     sumaCuadrados = 0
@@ -44,68 +57,73 @@ def calcularDesviacionEstandar(historialSoluciones,media):
     desviacion_estandar = varianza ** 0.5
     return desviacion_estandar
 
-#crear poblacion
-comunas = MetodosComunas.crear() #se crean las comunas y la lista de comunas creada se retorna a variable comunas
-#MetodosComunas.mostrar(comunas)
+#Se crea la lista de comunas con los datos correspondientes y se retorna a la variable comunas
+comunas = MetodosComunas.crear() 
 
 #inicializar variables control
 temperaturaActual = 500
 temperaturaMinima = 0.001
 iteracionesMax = 10
-
-#si el factor de enfriamiento es muy bajo, disminuye la temperatura muy rapido y por tanto cuando se hace el calculo de la probabilidad de 
-# aceptacion muchas veces el numero es muy pequeño y ocurre errores, ej errores : 0.2
+#si el factor de enfriamiento es muy bajo, disminuye la temperatura muy rapido y por tanto cuando se hace el calculo de la probabilidad muy pequeño
+#puede producir errores si es muy bajo
 factorEnfriamiento = 0.97
 
-print(" Solucion Inicial ")
-solucionActual = SA.generarSolucionInicial(comunas) #actualiza la lista de comunas actual poniendo antenas de forma random, pero asegurando cobertura total.
+#Se genera la solucion inicial
+solucionActual = SA.generarSolucionInicial(comunas) 
 MetodosComunas.mostrarDatosAntenasCobertura(solucionActual)
 
 print(f"Costo: {MetodosComunas.calcularCostoTotal(solucionActual)} Antenas: {MetodosComunas.calcularAntenas(solucionActual)}")
+
 
 costoSolucionActual = MetodosComunas.calcularCostoTotal(solucionActual)
 historialSoluciones = []
 iteraciones = 0
 
+#Mientras no ocurra el criterio de termino
 while not SA.criterioTermino(iteraciones,iteracionesMax,temperaturaActual,temperaturaMinima) :
-    #Generar una solución vecina haciendo un movimiento aleatorio (SWAP)
+
+    #Genera una solución vecina haciendo un movimiento aleatorio (SWAP) entre antenas de dos comunas.
     solucionVecina = SA.generarSolucionVecina(solucionActual)
     costoSolucionVecina = MetodosComunas.calcularCostoTotal(solucionVecina)
     
-    #MetodosComunas.mostrarDatosAntenasCobertura(solucionVecina) 
     print(f"Costo: {MetodosComunas.calcularCostoTotal(solucionVecina)} Antenas: {MetodosComunas.calcularAntenas(solucionVecina)}")
     print(f"iteracion:{iteraciones}")
+
     if costoSolucionVecina < costoSolucionActual: 
-        #Aceptar la solución vecina como la nueva solución actual
+        #Acepta la solución vecina como la nueva solución actual
         solucionActual = solucionVecina
-        #Actualizar el costo actual con el costo de la solución vecina
+        
+        #Actualiza el costo actual con el costo de la solución vecina
         costoSolucionActual = costoSolucionVecina
+
         historialSoluciones.append(solucionActual)
     else:
-        #Calcular la probabilidad de aceptación según el criterio de Metropolis (e ** (-diferenciaCostos / temp. Actual))
         diferenciaCostos = costoSolucionActual- costoSolucionVecina        
-
-        #Si el número aleatorio es menor o igual a la probabilidad de aceptación:
+        
+        #Si se acepta segun el criterio de aceptacion usado (criterio de metropolis) se acepta como solucion tambien.
         if(SA.criterioAceptacion(diferenciaCostos,temperaturaActual)):
-            #Aceptar la solución vecina como la nueva solución actual
+            #Acepta la solución vecina como la nueva solución actual
             solucionActual = solucionVecina
-            #Actualizar el costo actual con el costo de la solución vecina
+            #Actualiza el costo actual con el costo de la solución vecina
             costoSolucionActual = costoSolucionVecina
+            
             historialSoluciones.append(solucionActual)
 
     iteraciones+=1
+    #Actualiza la temperatura actual
     temperaturaActual*=factorEnfriamiento
-    
-print(f"Iteracioness: {iteraciones}")
 
+
+#Resultados finales
+print(f"Iteraciones totales: {iteraciones}")
 MetodosComunas.mostrarDatosAntenasCobertura(solucionActual)
 print(f"Costo: {MetodosComunas.calcularCostoTotal(solucionActual)} Antenas: {MetodosComunas.calcularAntenas(solucionActual)}")
 
-verHistorial(historialSoluciones)
-ordenado = quicksort(historialSoluciones)
-verHistorial(ordenado)
+#Se ordena el historial de menor a mayor usando el quicksort
+historialOrdenado = quicksort(historialSoluciones)
+verHistorial(historialOrdenado)
 
-print(f"Mejor solucion : {MetodosComunas.calcularCostoTotal(ordenado[0])}")
+print(f"Mejor solucion encontrada: {MetodosComunas.calcularCostoTotal(historialOrdenado[0])}")
 
 media = calcularMediaCostos(historialSoluciones)
 print(f"Costo promedio por instalar antena :{media} D.E = {calcularDesviacionEstandar(historialSoluciones,media)}")

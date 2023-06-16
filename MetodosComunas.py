@@ -1,7 +1,8 @@
 from Comuna import Comuna
 
-#Proceso crear comunas, asignar comunas vecinas y retornar lista de comunas creadas.
+#Proceso que crea las comunas, asigna las comunas vecinas y retorna la lista de comunas creadas.
 def crear():
+
     comunas = []
     
     #Se crean las comunas junto al costo de poner antena, el id se pone automaticamente.
@@ -42,7 +43,7 @@ def crear():
     villaAlemana = Comuna("Villa Alemana", 2.5)
     vinaDelMar = Comuna("Viña del Mar", 1.5)
         
-        #Se ponen las comunas vecinas
+    #Se asignan las comunas vecinas
     calleLarga.comunasVecinas = [losAndes, sanFelipe, rinconada] 
     sanEsteban.comunasVecinas = [losAndes, santaMaria,putaendo]
     rinconada.comunasVecinas = [calleLarga,losAndes,sanFelipe,rinconada]
@@ -80,7 +81,7 @@ def crear():
     villaAlemana.comunasVecinas = [limache,quilpue]
     vinaDelMar.comunasVecinas = [concon,quilpue,valparaiso] ###
 
-        #Se agregan las comunas a la lista de comunas
+    #Se agregan las comunas a la lista de comunas
     comunas.extend([
         calleLarga, sanEsteban, rinconada, losAndes, cabildo, laLigua, papudo, petorca, zapallar, hijuelas,
         laCalera, laCruz, limache, nogales, olmue, quillota, algarrobo, cartagena, elQuisco, elTabo, sanAntonio,
@@ -89,13 +90,17 @@ def crear():
 
     return comunas
     
+
 def mostrar(comunas):
     for comuna in comunas :
         comuna.mostrarDatos()
-    
+
+'''
+Funcion que muestra los datos de nombre comuna, si tiene antena y  si tiene cobertura de todas las comunas. 
+'''    
 def mostrarDatosAntenasCobertura(comunas):
     print()
-        # Encabezado de columnas
+    # Encabezado de columnas
     encabezado_nombre = f"{'Nombre':<{20}}"
     encabezado_antena = f"{'Tiene Antena':<{20}}"
     encabezado_cobertura = f"{'Tiene Cobertura'}"
@@ -104,11 +109,16 @@ def mostrarDatosAntenasCobertura(comunas):
     for comuna in comunas :
         comuna.mostrarDatosAntenaCobertura()
     
+'''
+
+'''
 def actualizarCoberturaVecinos(comuna):
     for vecino in comuna.comunasVecinas:
         vecino.tieneCobertura = True
 
-    
+'''
+Funcion que revisa que todas las comunas tengan cobertura, en caso que si retorna verdadero.
+'''
 def verificarCoberturaTotal(comunas):
     lista = []
     for comuna in comunas:
@@ -119,23 +129,31 @@ def verificarCoberturaTotal(comunas):
     if len(lista) == 0:
             return True
     return False
-    
+
+'''
+Suma los costos de instalacion  en caso que en una comuna se haya puesto una antena y los retorna
+'''
 def calcularCostoTotal(comunas):
     costoTotal = 0
     for comuna in comunas:
         if comuna.tieneAntena:
             costoTotal += comuna.costo
     return costoTotal
-    
+'''
+Cuenta la cantidad de antenas en la lista de comunas
+'''
 def calcularAntenas(comunas):
     antenas = 0
     for comuna in comunas:
         if comuna.tieneAntena:
             antenas+=1
     return antenas
-    
-    #ve todas las comunas que tengan antena desde el primero hasta el ultimo y les pone cobertura a sus vecinos y a si mismo.
+'''
+Primero reinicia el tieneCobertura en todas las comunas y luego ve todas las comunas que tengan antena desde el primero hasta el ultimo y 
+les pone cobertura a sus vecinos y a si mismo.
+'''
 def actualizarCoberturaAntenas(comunas):
+    #Reinicia el booleano tieneCobertura para no tener errores
     for c in comunas:
         c.tieneCobertura = False
 

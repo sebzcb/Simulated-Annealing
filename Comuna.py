@@ -1,7 +1,7 @@
 class Comuna:
 
     ultimoId = 0 
-    #Constructor de la clase
+    #Constructor de la clase Comuna
     def __init__(self, nombre, costo):
         Comuna.ultimoId+=1
         self.id = Comuna.ultimoId
@@ -18,6 +18,7 @@ class Comuna:
         print(f"Nombre: {self.nombre} ID: {self.id} COSTO: {self.costo}" )
         self.mostrarVecinos()
 
+    #Funcion creada para mostrar los datos de si tiene antena y si tiene cobertura la comuna, pero de forma ordenada.
     def mostrarDatosAntenaCobertura(self):
         # Definir el ancho de cada columna
         anchoColumnaNombre = 20
@@ -31,11 +32,14 @@ class Comuna:
         # Imprimir los datos alineados
         print(f"{nombre} {antena} {self.tieneCobertura}")
 
+    #Muestra los vecinos de la comuna
     def mostrarVecinos(self):
         vecinosString = ""
         for comunaVecina in self.comunasVecinas:
             vecinosString += comunaVecina.nombre + ", "
-        vecinosString = vecinosString.rstrip(", ")  # Eliminar la última coma y espacio en blanco
+        
+        # Eliminar la última coma y espacio en blanco
+        vecinosString = vecinosString.rstrip(", ")  
         print("Comunas vecinas:", vecinosString)
         print()
 
