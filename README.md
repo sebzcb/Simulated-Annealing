@@ -1,11 +1,12 @@
 # Simulated-Annealing
 Solucion a un problema de set covering problem usando la metaheuristica de Simulated Annealing
 
-Instrucciones:
-
-
 Integrantes: Sebastian Cahuana, Diego Rodriguez, Cristobal Cameron.
 
+Instrucciones:
+Ir al archivo Main.py y ejecutar el programa.
+
+Pseudocodigo : 
 
 Inicializar temperatura inicial
 Inicializar temperatura parada
