@@ -52,15 +52,24 @@ def generarSolucionVecina(comunas):
     
 #segun el criterio de metropolis
 def criterioAceptacion(diferenciaCostos,temperaturaActual):
+    print(f"e ** (-{diferenciaCostos}/{temperaturaActual})")
     
+    # En caso que el numero sea demasiado pequeño y produzca errores se hace un try-except, evitando errores a nivel de ejecucion
+    '''try:
+        probabilidadAceptacion =  math.exp(-diferenciaCostos / temperaturaActual)
+    except OverflowError:
+        print("Provoco un overflow")
+        probabilidadAceptacion = 0
+    '''
     probabilidadAceptacion =  math.exp(-diferenciaCostos / temperaturaActual)
+    
     #Generar un número aleatorio entre 0 y 1
     numeroRandom = random.random()
     if (numeroRandom <= probabilidadAceptacion):
         return True
     return False
 
-def criterioTermino(iteraciones,iteracionesMax,temperaturaActual):
-    if iteraciones < iteracionesMax and temperaturaActual > 0 :
+def criterioTermino(iteraciones,iteracionesMax,temperaturaActual,temperaturaMinima):
+    if iteraciones < iteracionesMax and temperaturaActual > temperaturaMinima :
         return False
     return True

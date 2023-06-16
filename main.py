@@ -24,20 +24,26 @@ def quicksort(arr):
         else:
             right.append(x)
     return quicksort(left) + middle + quicksort(right)
-
+def calcularMediaCostos(historialSoluciones):
+    sumaCosto = 0 
+    comunasConAntena = 0 
+    for solucion in historialSoluciones :
+        sumaCosto+= MetodosComunas.calcularCostoTotal(solucion)
+        comunasConAntena+=1
+    return sumaCosto/comunasConAntena
 
 #crear poblacion
 comunas = MetodosComunas.crear() #se crean las comunas y la lista de comunas creada se retorna a variable comunas
 #MetodosComunas.mostrar(comunas)
 
 #inicializar variables control
-temperaturaActual = 100
-temperaturaFin = 0
-iteracionesMax = 100
+temperaturaActual = 500
+temperaturaMinima = 0.001
+iteracionesMax = 10
 
 #si el factor de enfriamiento es muy bajo, disminuye la temperatura muy rapido y por tanto cuando se hace el calculo de la probabilidad de 
 # aceptacion muchas veces el numero es muy pequeño y ocurre errores, ej errores : 0.2
-factorEnfriamiento = 0.9
+factorEnfriamiento = 0.97
 
 print(" Solucion Inicial ")
 solucionActual = SA.generarSolucionInicial(comunas) #actualiza la lista de comunas actual poniendo antenas de forma random, pero asegurando cobertura total.
@@ -49,14 +55,14 @@ costoSolucionActual = MetodosComunas.calcularCostoTotal(solucionActual)
 historialSoluciones = []
 iteraciones = 0
 
-while not SA.criterioTermino(iteraciones,iteracionesMax,temperaturaActual) :
+while not SA.criterioTermino(iteraciones,iteracionesMax,temperaturaActual,temperaturaMinima) :
     #Generar una solución vecina haciendo un movimiento aleatorio (SWAP)
     solucionVecina = SA.generarSolucionVecina(solucionActual)
     costoSolucionVecina = MetodosComunas.calcularCostoTotal(solucionVecina)
     
     #MetodosComunas.mostrarDatosAntenasCobertura(solucionVecina) 
     print(f"Costo: {MetodosComunas.calcularCostoTotal(solucionVecina)} Antenas: {MetodosComunas.calcularAntenas(solucionVecina)}")
-    
+    print(f"iteracion:{iteraciones}")
     if costoSolucionVecina < costoSolucionActual: 
         #Aceptar la solución vecina como la nueva solución actual
         solucionActual = solucionVecina
@@ -66,6 +72,7 @@ while not SA.criterioTermino(iteraciones,iteracionesMax,temperaturaActual) :
     else:
         #Calcular la probabilidad de aceptación según el criterio de Metropolis (e ** (-diferenciaCostos / temp. Actual))
         diferenciaCostos = costoSolucionActual- costoSolucionVecina        
+
         #Si el número aleatorio es menor o igual a la probabilidad de aceptación:
         if(SA.criterioAceptacion(diferenciaCostos,temperaturaActual)):
             #Aceptar la solución vecina como la nueva solución actual
@@ -87,8 +94,7 @@ ordenado = quicksort(historialSoluciones)
 verHistorial(ordenado)
 
 print(f"Mejor solucion : {MetodosComunas.calcularCostoTotal(ordenado[0])}")
+print(f"Costo promedio por instalar antena :{calcularMediaCostos(historialSoluciones)}")
 print(f"{time.time()} segundos ")
-
-
 
 
